@@ -1,0 +1,11 @@
+{% extends "portfolio/base.html" %}
+{% block content %}
+<h1>삭제 확인</h1>
+<p><strong>{{ object }}</strong>을(를) 삭제하시겠습니까?</p>
+{% if warning %}<p class="muted">{{ warning }}</p>{% endif %}
+<form method="post" class="form-actions">
+  {% csrf_token %}
+  <button type="submit" class="button danger">삭제</button>
+  <a href="{% url cancel_url %}">취소</a>
+</form>
+{% endblock %}

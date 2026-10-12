@@ -1,0 +1,31 @@
+{% extends "portfolio/base.html" %}
+{% load portfolio_tags %}
+{% block content %}
+<h1>대시보드</h1>
+<section class="stats">
+  <div class="stat"><span>총 평가액</span><strong>{{ market_value|floatformat:"2g" }}</strong></div>
+  <div class="stat"><span>연간 예상 배당</span><strong>{{ annual_income|floatformat:"2g" }}</strong></div>
+  <div class="stat"><span>월 평균 배당</span><strong>{{ monthly_average|floatformat:"2g" }}</strong></div>
+  <div class="stat"><span>포트폴리오 수익률</span><strong>{{ portfolio_yield|percent }}</strong></div>
+</section>
+
+<h2>향후 12개월 월별 배당 예측</h2>
+{% if tickers %}
+<table>
+  <thead><tr><th>월</th><th class="num">예상 배당</th><th class="bar-col"></th><th>지급 종목</th></tr></thead>
+  <tbody>
+  {% for m in forecast %}
+    <tr>
+      <td>{{ m.year }}-{{ m.month|stringformat:"02d" }}</td>
+      <td class="num">{{ m.total|floatformat:"2g" }}</td>
+      <td class="bar-col"><div class="bar" style="width: {% widthratio m.total max_month 100 %}%"></div></td>
+      <td class="muted">{% for symbol, amount in m.breakdown %}{{ symbol }} {{ amount|floatformat:"2g" }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+  <tfoot><tr><th>합계</th><th class="num">{{ forecast_total|floatformat:"2g" }}</th><th colspan="2"></th></tr></tfoot>
+</table>
+{% else %}
+<p class="empty">등록된 종목이 없습니다. <a href="{% url 'ticker_create' %}">종목을 등록</a>하면 예측이 표시됩니다.</p>
+{% endif %}
+{% endblock %}

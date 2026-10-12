@@ -1,0 +1,12 @@
+{% extends "portfolio/base.html" %}
+{% block content %}
+<h1>{{ title }}</h1>
+<form method="post" class="form">
+  {% csrf_token %}
+  {{ form.as_div }}
+  <div class="form-actions">
+    <button type="submit" class="button">저장</button>
+    <a href="{% url cancel_url %}">취소</a>
+  </div>
+</form>
+{% endblock %}

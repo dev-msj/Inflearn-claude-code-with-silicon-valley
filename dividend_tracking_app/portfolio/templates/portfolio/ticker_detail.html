@@ -1,0 +1,47 @@
+{% extends "portfolio/base.html" %}
+{% load portfolio_tags %}
+{% block content %}
+<div class="heading">
+  <h1>{{ ticker.symbol }} <span class="muted">{{ ticker.name }}</span></h1>
+  <div>
+    <a class="button" href="{% url 'ticker_edit' ticker.pk %}">수정</a>
+    <a class="button danger" href="{% url 'ticker_delete' ticker.pk %}">삭제</a>
+  </div>
+</div>
+<section class="stats">
+  <div class="stat"><span>현재 수익률</span><strong>{{ ticker.current_yield|percent }}</strong></div>
+  <div class="stat"><span>원가 수익률</span><strong>{{ ticker.yield_on_cost|percent }}</strong></div>
+  <div class="stat"><span>연간 예상 배당</span><strong>{{ ticker.annual_income|floatformat:"2g" }}</strong></div>
+  <div class="stat"><span>평가액</span><strong>{{ ticker.market_value|floatformat:"2g" }}</strong></div>
+</section>
+<p class="muted">
+  보유 {{ ticker.shares|floatformat:"-4g" }}주 · 평균 매입가 {{ ticker.avg_cost|floatformat:"2g" }} · 현재가 {{ ticker.current_price|floatformat:"2g" }} ·
+  {{ ticker.get_frequency_display }} 1회 {{ ticker.dividend_per_share|floatformat:"4g" }} · 지급 월 {{ payment_months|join:", " }}
+</p>
+
+<h2>수익률 이력</h2>
+<table>
+  <thead><tr><th>기록일</th><th class="num">가격</th><th class="num">연간 주당 배당</th><th class="num">수익률</th></tr></thead>
+  <tbody>
+  {% for s in snapshots %}
+    <tr><td>{{ s.date|date:"Y-m-d" }}</td><td class="num">{{ s.price|floatformat:"2g" }}</td>
+      <td class="num">{{ s.annual_dividend_per_share|floatformat:"4g" }}</td><td class="num">{{ s.yield_pct|percent }}</td></tr>
+  {% empty %}
+    <tr><td colspan="4" class="empty">이력이 없습니다.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<h2>배당 기록</h2>
+<table>
+  <thead><tr><th>지급일</th><th class="num">주당 지급액</th><th class="num">수량</th><th class="num">합계</th></tr></thead>
+  <tbody>
+  {% for d in dividends %}
+    <tr><td>{{ d.pay_date|date:"Y-m-d" }}</td><td class="num">{{ d.amount_per_share|floatformat:"4g" }}</td>
+      <td class="num">{{ d.shares|floatformat:"-4g" }}</td><td class="num">{{ d.total|floatformat:"2g" }}</td></tr>
+  {% empty %}
+    <tr><td colspan="4" class="empty">배당 기록이 없습니다.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% load static %}<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}배당 기록{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'portfolio/style.css' %}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{% url 'dashboard' %}">배당 기록</a>
+    <nav>
+      <a href="{% url 'dashboard' %}">대시보드</a>
+      <a href="{% url 'ticker_list' %}">종목</a>
+      <a href="{% url 'dividend_list' %}">배당 기록</a>
+    </nav>
+  </header>
+  <main>{% block content %}{% endblock %}</main>
+</body>
+</html>

@@ -1,0 +1,28 @@
+{% extends "portfolio/base.html" %}
+{% block content %}
+<div class="heading"><h1>배당 기록</h1><a class="button" href="{% url 'dividend_create' %}">기록 추가</a></div>
+{% if yearly_totals %}
+<section class="stats">
+  {% for year, total in yearly_totals %}
+  <div class="stat"><span>{{ year }}년 수령액</span><strong>{{ total|floatformat:"2g" }}</strong></div>
+  {% endfor %}
+</section>
+{% endif %}
+<table>
+  <thead><tr><th>지급일</th><th>종목</th><th class="num">주당 지급액</th><th class="num">수량</th><th class="num">합계</th><th></th></tr></thead>
+  <tbody>
+  {% for d in dividends %}
+    <tr>
+      <td>{{ d.pay_date|date:"Y-m-d" }}</td>
+      <td><a href="{% url 'ticker_detail' d.ticker.pk %}">{{ d.ticker.symbol }}</a></td>
+      <td class="num">{{ d.amount_per_share|floatformat:"4g" }}</td>
+      <td class="num">{{ d.shares|floatformat:"-4g" }}</td>
+      <td class="num">{{ d.total|floatformat:"2g" }}</td>
+      <td class="actions"><a href="{% url 'dividend_edit' d.pk %}">수정</a> <a href="{% url 'dividend_delete' d.pk %}">삭제</a></td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="6" class="empty">배당 기록이 없습니다.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

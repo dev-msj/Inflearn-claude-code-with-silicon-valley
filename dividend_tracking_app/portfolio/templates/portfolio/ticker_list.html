@@ -1,0 +1,29 @@
+{% extends "portfolio/base.html" %}
+{% load portfolio_tags %}
+{% block content %}
+<div class="heading"><h1>종목</h1><a class="button" href="{% url 'ticker_create' %}">종목 등록</a></div>
+{% if tickers %}
+<table>
+  <thead><tr>
+    <th>종목</th><th class="num">수량</th><th class="num">현재가</th><th>주기</th>
+    <th class="num">연간 주당 배당</th><th class="num">연간 배당</th><th class="num">현재 수익률</th><th class="num">원가 수익률</th>
+  </tr></thead>
+  <tbody>
+  {% for t in tickers %}
+    <tr>
+      <td><a href="{% url 'ticker_detail' t.pk %}">{{ t.symbol }}</a> <span class="muted">{{ t.name }}</span></td>
+      <td class="num">{{ t.shares|floatformat:"-4g" }}</td>
+      <td class="num">{{ t.current_price|floatformat:"2g" }}</td>
+      <td>{{ t.get_frequency_display }}</td>
+      <td class="num">{{ t.annual_dividend_per_share|floatformat:"4g" }}</td>
+      <td class="num">{{ t.annual_income|floatformat:"2g" }}</td>
+      <td class="num">{{ t.current_yield|percent }}</td>
+      <td class="num">{{ t.yield_on_cost|percent }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="empty">등록된 종목이 없습니다.</p>
+{% endif %}
+{% endblock %}
